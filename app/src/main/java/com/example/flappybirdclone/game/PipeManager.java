@@ -26,9 +26,9 @@ public class PipeManager {
         pipes = new ArrayList<Pipe>();
         random = new Random();
         pipeBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pipe);
-        pipeBitmap = Bitmap.createScaledBitmap(pipeBitmap, 200, 600, false);
         screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         screenHeight = context.getResources().getDisplayMetrics().heightPixels;
+        pipeBitmap = Bitmap.createScaledBitmap(pipeBitmap, 200, screenHeight, false);
     }
 
     public void update() {

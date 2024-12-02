@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.example.flappybirdclone.R;
 import com.example.flappybirdclone.utils.PreferenceManager;
 
 
@@ -17,6 +18,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread gameThread;
     private Bird bird;
     private PipeManager pipeManager;
+
+    private Background background;
     private PreferenceManager preferenceManager;
 
     public GameView(Context context) {
@@ -24,12 +27,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Log.d("GameView","GameView created");
         getHolder().addCallback(this);
         preferenceManager = PreferenceManager.getInstance(context);
+        background = new Background(R.drawable.background, context);
         bird = new Bird(context);
         pipeManager = new PipeManager(context);
-        gameThread = new GameThread(getHolder(), this);
-
+        gameThread = GameThread.getInstance(getHolder(), this);
         setFocusable(true);
-
     }
 
     public void pause() {
@@ -44,16 +46,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void resume() {
         Log.d("GameView", "GameView resumed");
-        gameThread = new GameThread(getHolder(), this);
+        gameThread = GameThread.getInstance(getHolder(), this);
         gameThread.setRunning(true);
-        gameThread.start();
+        if (!gameThread.isAlive()) {
+            if (gameThread != null)
+            gameThread.start();
+        }
     }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        gameThread = new GameThread(getHolder(), this);
-        gameThread.setRunning(true);
-        gameThread.start();
+        Log.d("GameView", "Surface created");
+        gameThread = GameThread.getInstance(getHolder(), this);
+        if (!gameThread.isAlive()) {
+            gameThread.setRunning(true);
+            gameThread.start();
+        }
     }
 
     @Override
@@ -63,11 +71,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+        Log.d("GameView", "Surface destroyed");
         gameThread.setRunning(false);
         boolean retry = true;
         while (retry) {
             try {
                 gameThread.join();
+                GameThread.destroyInstance();
                 retry = false;
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -79,6 +89,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            gameThread.resumeGame();
             bird.flap();
             return true;
         }
@@ -92,6 +103,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
 
         if (canvas != null) {
+            Log.d("GameView", "Drawing bird and pipes");
+            background.draw(canvas);
             bird.draw(canvas);
             pipeManager.draw(canvas);
             // Draw other elements (score)
@@ -99,8 +112,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
+        Log.d("GameView", "Update called");
         bird.update();
         pipeManager.update();
+        background.update();
         checkCollisions();
     }
 
@@ -111,6 +126,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void gameOver() {
-        gameThread.setRunning(false);
+        Log.d("GameView", "Game over");
+        if (gameThread != null) gameThread.setRunning(false);
     }
 }

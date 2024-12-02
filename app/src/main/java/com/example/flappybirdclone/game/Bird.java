@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.RectF;
 
 import com.example.flappybirdclone.R;
@@ -16,6 +17,8 @@ public class Bird {
     private PreferenceManager preferenceManager;
     private Context context;
 
+    private Paint debugPaint = new Paint();
+
     private static final float GRAVITY = 0.5f;
     private static final float FLAP_ACCL = -10f;
     public Bird(Context context) {
@@ -26,6 +29,11 @@ public class Bird {
         y = 500;
         velocity = 0;
         updateHitbox();
+
+
+        debugPaint.setStyle(Paint.Style.STROKE);
+        debugPaint.setStrokeWidth(5);
+        debugPaint.setColor(0xFFFF0000);
     }
 
     private void loadBirdSkin() {
@@ -46,6 +54,7 @@ public class Bird {
 
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, x, y, null);
+        canvas.drawRect(hitbox, debugPaint);
     }
 
     public void flap() {

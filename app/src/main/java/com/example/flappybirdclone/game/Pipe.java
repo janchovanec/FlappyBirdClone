@@ -2,6 +2,7 @@ package com.example.flappybirdclone.game;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.RectF;
 
 public class Pipe {
@@ -9,6 +10,8 @@ public class Pipe {
     private float x, y;
     private RectF hitbox;
     private boolean scored;
+
+    private Paint debugPaint = new Paint();
 
     private static final float SCROLL_SPEED = 5f;
 
@@ -18,6 +21,10 @@ public class Pipe {
         this.y = y;
         this.scored = false;
         updateHitbox();
+
+        debugPaint.setStyle(Paint.Style.STROKE);
+        debugPaint.setStrokeWidth(5);
+        debugPaint.setColor(0xFFFF0000);
     }
 
     public void update() {
@@ -27,10 +34,11 @@ public class Pipe {
 
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, x, y, null);
+        canvas.drawRect(hitbox, debugPaint);
     }
 
     private void updateHitbox() {
-        hitbox = new RectF(x, y, x + bitmap.getWidth(), y + bitmap.getHeight());
+        hitbox = new RectF(x + bitmap.getWidth() * 0.1f, y, x + bitmap.getWidth() * 0.9f, y + bitmap.getHeight());
     }
 
     public RectF getHitbox() {

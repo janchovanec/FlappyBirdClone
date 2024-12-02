@@ -22,6 +22,7 @@ public class MainActivity extends Activity {
 
         btnStartGame.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, GameActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
 
