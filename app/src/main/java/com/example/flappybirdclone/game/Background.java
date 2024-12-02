@@ -14,7 +14,7 @@ public class Background {
     private int screenWidth;
     private int screenHeight;
 
-    private static final int SCROLL_SPEED = 5;
+    private static final int SCROLL_SPEED = 3;
 
     public Background(int sourceImg, Context context) {
         Bitmap sourceBitmap = BitmapFactory.decodeResource(context.getResources(), sourceImg);

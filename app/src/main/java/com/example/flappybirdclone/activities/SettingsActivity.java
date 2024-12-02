@@ -2,8 +2,9 @@ package com.example.flappybirdclone.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -66,10 +67,50 @@ public class SettingsActivity extends Activity {
 
         cameraBtn.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, CameraActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 100);
         });
 
+        cowboyBtn.setOnClickListener(v -> {
+            Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.cowboy);
+            preferenceManager.setBirdSkinPath(uri.toString());
+        });
 
+        flappyBtn.setOnClickListener(v -> {
+            Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.flappybird);
+            preferenceManager.setBirdSkinPath(uri.toString());
+        });
 
+        japanBtn.setOnClickListener(v -> {
+            Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.japan);
+            preferenceManager.setBirdSkinPath(uri.toString());
+        });
+
+        customBtn.setOnClickListener(v -> {
+            Uri uri;
+            if (preferenceManager.getCustomSkinPath() == null) {
+                uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.custom_skin);
+            } else {
+                uri = Uri.parse(preferenceManager.getCustomSkinPath());
+            }
+            preferenceManager.setBirdSkinPath(uri.toString());
+            if (preferenceManager.getCustomSkinPath() != null) {
+                customBtn.setImageURI(Uri.parse(preferenceManager.getCustomSkinPath()));
+            }
+        });
+
+        if (preferenceManager.getCustomSkinPath() != null) {
+            customBtn.setImageURI(Uri.parse(preferenceManager.getCustomSkinPath()));
+        }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            if (preferenceManager.getCustomSkinPath() != null) {
+                customBtn.setImageURI(Uri.parse(preferenceManager.getCustomSkinPath()));
+            }
+        }
+    }
+
 }

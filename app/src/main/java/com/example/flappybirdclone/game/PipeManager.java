@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.example.flappybirdclone.R;
 
@@ -19,10 +20,12 @@ public class PipeManager {
     private Context context;
     private Random random;
     private int screenWidth, screenHeight;
-    private static final int VER_GAP = 400;
+    private static final int VER_GAP = 500;
     private static final int HOR_GAP = 800;
-    public PipeManager(Context context) {
+    private Score score;
+    public PipeManager(Context context, Score score) {
         this.context = context;
+        this.score = score;
         pipes = new ArrayList<Pipe>();
         random = new Random();
         pipeBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pipe);
@@ -34,6 +37,13 @@ public class PipeManager {
     public void update() {
         if (pipes.isEmpty() || screenWidth - pipes.get(pipes.size() - 1).getX() > HOR_GAP) {
             addPipe();
+        }
+
+        for (Pipe pipe : pipes) {
+            if (pipe.getX() + pipe.getWidth() < screenWidth / 3f && !pipe.isPassed() && !pipe.isInverted()) {
+                score.incrementScore();
+                pipe.setPassed(true);
+            }
         }
 
         Iterator<Pipe> iterator = pipes.iterator();
@@ -57,10 +67,14 @@ public class PipeManager {
         float maxY = screenHeight - VER_GAP;
         float yPosition = minY + random.nextFloat() * (maxY - minY);
 
-        Bitmap invertedPipe = Bitmap.createBitmap(pipeBitmap, 0, 0, pipeBitmap.getWidth(), pipeBitmap.getHeight(), null, true);
-        pipes.add(new Pipe(invertedPipe, screenWidth, yPosition - VER_GAP - pipeBitmap.getHeight()));
+        // Random coefficient 80% to 120%
+        float randCoeff = random.nextFloat() * 0.4f + 0.8f;
+        Log.wtf("PipeManager", "randCoeff: " + randCoeff);
 
-        pipes.add(new Pipe(pipeBitmap, screenWidth, yPosition));
+        Bitmap invertedPipe = Bitmap.createBitmap(pipeBitmap, 0, 0, pipeBitmap.getWidth(), pipeBitmap.getHeight(), null, true);
+        pipes.add(new Pipe(invertedPipe, screenWidth, yPosition - VER_GAP * randCoeff - pipeBitmap.getHeight(), true));
+
+        pipes.add(new Pipe(pipeBitmap, screenWidth, yPosition, false));
     }
 
     public boolean checkCollision(Bird bird) {

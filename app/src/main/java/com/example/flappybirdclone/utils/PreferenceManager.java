@@ -40,4 +40,12 @@ public class PreferenceManager {
         prefs.edit().putString("skinPath",path).apply();
     }
 
+    public void setCustomSkinPath(String path) {
+        prefs.edit().putString("customSkinPath",path).apply();
+    }
+
+    public String getCustomSkinPath() {
+        return prefs.getString("customSkinPath",null);
+    }
+
 }

@@ -9,17 +9,19 @@ public class Pipe {
     private Bitmap bitmap;
     private float x, y;
     private RectF hitbox;
-    private boolean scored;
+    private boolean passed;
+    private boolean inverted;
 
     private Paint debugPaint = new Paint();
 
     private static final float SCROLL_SPEED = 5f;
 
-    public Pipe(Bitmap bitmap, float x, float y) {
+    public Pipe(Bitmap bitmap, float x, float y, boolean inverted) {
         this.bitmap = bitmap;
         this.x = x;
         this.y = y;
-        this.scored = false;
+        this.passed = false;
+        this.inverted = inverted;
         updateHitbox();
 
         debugPaint.setStyle(Paint.Style.STROKE);
@@ -49,19 +51,23 @@ public class Pipe {
         return x + bitmap.getWidth() < 0;
     }
 
-    public boolean isScored() {
-        return scored;
-    }
-
-    public void setScored(boolean scored) {
-        this.scored = scored;
-    }
-
     public float getX() {
         return x;
     }
 
     public float getWidth() {
         return bitmap.getWidth();
+    }
+
+    public boolean isPassed() {
+        return passed;
+    }
+
+    public void setPassed(boolean passed) {
+        this.passed = passed;
+    }
+
+    public boolean isInverted() {
+        return inverted;
     }
 }
