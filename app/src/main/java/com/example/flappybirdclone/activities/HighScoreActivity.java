@@ -1,4 +1,8 @@
 package com.example.flappybirdclone.activities;
 
-public class HighScoreActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+
+public class HighScoreActivity extends AppCompatActivity {
+
 }

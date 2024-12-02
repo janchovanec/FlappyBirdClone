@@ -10,17 +10,17 @@
         android:id="@+id/btnStartGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Game" />
+        android:text="@string/start_game" />
 
     <Button
         android:id="@+id/btnHighScores"
-        android:text="High Scores"
+        android:text="@string/high_scores"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/btnSettings"
-        android:text="Settings"
+        android:text="@string/settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>
