@@ -14,7 +14,9 @@
         app:layout_constraintStart_toEndOf="@+id/volumeLbl"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.135"
-        app:layout_constraintWidth_percent="0.7" />
+        app:layout_constraintWidth_percent="0.7"
+        android:layout_height="0dp"
+        android:layout_width="0dp"/>
 
     <TextView
         android:id="@+id/volumeLbl"
@@ -28,7 +30,8 @@
         app:layout_constraintHorizontal_bias="0.068"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.135" />
+        app:layout_constraintVertical_bias="0.135"
+        android:layout_height="0dp"/>
 
     <TextView
         android:id="@+id/settingsLbl"
@@ -67,7 +70,8 @@
         app:layout_constraintHorizontal_bias="0.102"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/volumeLbl"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_height="0dp"/>
 
     <ImageButton
         android:id="@+id/flappySkin"
@@ -75,7 +79,7 @@
         android:layout_height="100dp"
         android:layout_centerInParent="true"
         android:background="?attr/selectableItemBackground"
-        android:contentDescription="User-selected image"
+        android:contentDescription="flappy bird skin"
         android:scaleType="centerCrop"
         android:src="@drawable/flappybird"
         app:layout_constraintBottom_toBottomOf="parent"

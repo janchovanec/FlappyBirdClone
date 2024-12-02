@@ -1,21 +1,116 @@
 package com.example.flappybirdclone.game;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class GameView extends SurfaceView {
+import androidx.annotation.NonNull;
+
+import com.example.flappybirdclone.utils.PreferenceManager;
+
+
+public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+
+    private GameThread gameThread;
+    private Bird bird;
+    private PipeManager pipeManager;
+    private PreferenceManager preferenceManager;
 
     public GameView(Context context) {
         super(context);
         Log.d("GameView","GameView created");
+        getHolder().addCallback(this);
+        preferenceManager = PreferenceManager.getInstance(context);
+        bird = new Bird(context);
+        pipeManager = new PipeManager(context);
+        gameThread = new GameThread(getHolder(), this);
+
+        setFocusable(true);
+
     }
 
     public void pause() {
         Log.d("GameView", "GameView paused");
+        gameThread.setRunning(false);
+        try {
+            gameThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void resume() {
         Log.d("GameView", "GameView resumed");
+        gameThread = new GameThread(getHolder(), this);
+        gameThread.setRunning(true);
+        gameThread.start();
+    }
+
+    @Override
+    public void surfaceCreated(@NonNull SurfaceHolder holder) {
+        gameThread = new GameThread(getHolder(), this);
+        gameThread.setRunning(true);
+        gameThread.start();
+    }
+
+    @Override
+    public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+        gameThread.setRunning(false);
+        boolean retry = true;
+        while (retry) {
+            try {
+                gameThread.join();
+                retry = false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        gameThread = null;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            bird.flap();
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+
+        if (canvas != null) {
+            bird.draw(canvas);
+            pipeManager.draw(canvas);
+            // Draw other elements (score)
+        }
+    }
+
+    public void update() {
+        bird.update();
+        pipeManager.update();
+        checkCollisions();
+    }
+
+    private void checkCollisions() {
+        if (pipeManager.checkCollision(bird) || bird.isOffScreen()) {
+            gameOver();
+        }
+    }
+
+    private void gameOver() {
+        gameThread.setRunning(false);
     }
 }
