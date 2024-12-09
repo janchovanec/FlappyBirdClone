@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.util.Log;
 
@@ -32,6 +33,16 @@ public class PipeManager {
         screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         screenHeight = context.getResources().getDisplayMetrics().heightPixels;
         pipeBitmap = Bitmap.createScaledBitmap(pipeBitmap, 200, screenHeight, false);
+
+        // add cap to pipe
+        Bitmap cap = BitmapFactory.decodeResource(context.getResources(), R.drawable.cap_pipe);
+        cap = Bitmap.createScaledBitmap(cap, pipeBitmap.getWidth(), 100, false);
+
+        Bitmap combinedBitmap = Bitmap.createBitmap(pipeBitmap.getWidth(), pipeBitmap.getHeight() + cap.getHeight(), pipeBitmap.getConfig());
+        Canvas canvas = new Canvas(combinedBitmap);
+        canvas.drawBitmap(pipeBitmap, 0f, 0f, null);
+        canvas.drawBitmap(cap, 0f, 0, null);
+        pipeBitmap = combinedBitmap;
     }
 
     public void update() {
@@ -71,7 +82,10 @@ public class PipeManager {
         float randCoeff = random.nextFloat() * 0.4f + 0.8f;
         Log.wtf("PipeManager", "randCoeff: " + randCoeff);
 
-        Bitmap invertedPipe = Bitmap.createBitmap(pipeBitmap, 0, 0, pipeBitmap.getWidth(), pipeBitmap.getHeight(), null, true);
+        Matrix rotMat = new Matrix();
+        rotMat.postRotate(180);
+
+        Bitmap invertedPipe = Bitmap.createBitmap(pipeBitmap, 0, 0, pipeBitmap.getWidth(), pipeBitmap.getHeight(), rotMat, true);
         pipes.add(new Pipe(invertedPipe, screenWidth, yPosition - VER_GAP * randCoeff - pipeBitmap.getHeight(), true));
 
         pipes.add(new Pipe(pipeBitmap, screenWidth, yPosition, false));

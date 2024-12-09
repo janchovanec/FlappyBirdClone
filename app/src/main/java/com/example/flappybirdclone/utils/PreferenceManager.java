@@ -36,12 +36,17 @@ public class PreferenceManager {
     public String getBirdSkinPath() {
         return prefs.getString("skinPath",null);
     }
-    public void setBirdSkinPath(String path) {
+    public void setBirdSkinPath(String path, String name) {
         prefs.edit().putString("skinPath",path).apply();
+        prefs.edit().putString("skinName",name).apply();
     }
 
     public void setCustomSkinPath(String path) {
         prefs.edit().putString("customSkinPath",path).apply();
+    }
+
+    public String getChosenSkinName() {
+        return prefs.getString("skinName",null);
     }
 
     public String getCustomSkinPath() {

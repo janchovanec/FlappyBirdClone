@@ -63,7 +63,9 @@ public class Bird {
         canvas.save();
         canvas.rotate(rotation, x + bitmap.getWidth() / 2f, y + bitmap.getHeight() / 2f);
         canvas.drawBitmap(bitmap, x, y, null);
-        canvas.drawRect(hitbox, debugPaint);
+
+        //canvas.drawRect(hitbox, debugPaint);
+
         canvas.restore();
     }
 

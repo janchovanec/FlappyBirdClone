@@ -1,5 +1,7 @@
 package com.example.flappybirdclone.activities;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -21,6 +23,8 @@ public class SettingsActivity extends Activity {
     private Button cameraBtn;
 
     private PreferenceManager preferenceManager;
+
+    private AnimatorSet animatorSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,17 +76,20 @@ public class SettingsActivity extends Activity {
 
         cowboyBtn.setOnClickListener(v -> {
             Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.cowboy);
-            preferenceManager.setBirdSkinPath(uri.toString());
+            preferenceManager.setBirdSkinPath(uri.toString(), "cowboy");
+            animateSelectedSkin();
         });
 
         flappyBtn.setOnClickListener(v -> {
             Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.flappybird);
-            preferenceManager.setBirdSkinPath(uri.toString());
+            preferenceManager.setBirdSkinPath(uri.toString(), "flappybird");
+            animateSelectedSkin();
         });
 
         japanBtn.setOnClickListener(v -> {
             Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.japan);
-            preferenceManager.setBirdSkinPath(uri.toString());
+            preferenceManager.setBirdSkinPath(uri.toString(), "japan");
+            animateSelectedSkin();
         });
 
         customBtn.setOnClickListener(v -> {
@@ -92,15 +99,18 @@ public class SettingsActivity extends Activity {
             } else {
                 uri = Uri.parse(preferenceManager.getCustomSkinPath());
             }
-            preferenceManager.setBirdSkinPath(uri.toString());
+            preferenceManager.setBirdSkinPath(uri.toString(), "custom");
             if (preferenceManager.getCustomSkinPath() != null) {
                 customBtn.setImageURI(Uri.parse(preferenceManager.getCustomSkinPath()));
             }
+            animateSelectedSkin();
         });
 
         if (preferenceManager.getCustomSkinPath() != null) {
             customBtn.setImageURI(Uri.parse(preferenceManager.getCustomSkinPath()));
         }
+        animatorSet = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.oscillate);
+        animateSelectedSkin();
     }
 
     @Override
@@ -111,6 +121,28 @@ public class SettingsActivity extends Activity {
                 customBtn.setImageURI(Uri.parse(preferenceManager.getCustomSkinPath()));
             }
         }
+    }
+
+    private void animateSelectedSkin() {
+        String chosenSkin = preferenceManager.getChosenSkinName();
+        if (chosenSkin != null) {
+            ImageButton selectedSkinButton = findViewById(R.id.flappySkin);
+            if (chosenSkin.compareTo("cowboy") == 0) {
+                selectedSkinButton = findViewById(R.id.cowboySkin);
+            } else if (chosenSkin.compareTo("flappybird") == 0) {
+                selectedSkinButton = findViewById(R.id.flappySkin);
+            } else if (chosenSkin.compareTo("japan") == 0) {
+                selectedSkinButton = findViewById(R.id.japanSkin);
+            } else if (chosenSkin.compareTo("custom") == 0) {
+                selectedSkinButton = findViewById(R.id.customSkin);
+            } else {
+                return;
+            }
+            animatorSet.end();
+            animatorSet.setTarget(selectedSkinButton);
+            animatorSet.start();
+        }
+
     }
 
 }

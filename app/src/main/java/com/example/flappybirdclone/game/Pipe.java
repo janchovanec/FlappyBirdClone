@@ -36,7 +36,7 @@ public class Pipe {
 
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, x, y, null);
-        canvas.drawRect(hitbox, debugPaint);
+        //canvas.drawRect(hitbox, debugPaint);
     }
 
     private void updateHitbox() {
